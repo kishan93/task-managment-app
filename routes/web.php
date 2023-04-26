@@ -32,4 +32,7 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+
+    Route::resource('projects', \App\Http\Controllers\ProjectController::class);
+    Route::resource('tasks', \App\Http\Controllers\TaskController::class);
 });
