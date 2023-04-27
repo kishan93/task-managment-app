@@ -16,6 +16,15 @@ class Project extends Model
         'description',
     ];
 
+    protected $appends = [
+        'created_ago',
+    ];
+
+    public function getCreatedAgoAttribute()
+    {
+        return $this->created_at->diffForHumans();
+    }
+
     public function tasks()
     {
         return $this->hasMany(Task::class);

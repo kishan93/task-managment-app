@@ -14,7 +14,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Projects/Index', [
+        return Inertia::render('Projects/ProjectIndex', [
             'projects' => Project::with('tasks')->get(),
         ]);
     }
@@ -24,7 +24,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Projects/Create');
+        return Inertia::render('Projects/ProjectCreate');
     }
 
     /**
@@ -42,7 +42,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        return Inertia::render('Projects/Show', [
+        return Inertia::render('Projects/ProjectShow', [
             'project' => $project->load('tasks'),
         ]);
     }
