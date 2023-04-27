@@ -24,9 +24,8 @@ class UpdateTaskRequest extends FormRequest
         return [
             'title' => ['required', 'max:255'],
             'description' => ['nullable', 'max:255'],
-            'project_id' => ['required', 'exists:projects,id'],
+            'project_id' => ['nullable', 'exists:projects,id'],
             'status' => ['required', 'in:todo,in_progress,done'],
-            'priority' => ['nullable', 'numeric', 'between:1,100'],
         ];
     }
 }

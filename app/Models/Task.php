@@ -18,4 +18,21 @@ class Task extends Model
         'priority',
         'status',
     ];
+
+    protected $casts = [
+    ];
+
+    protected $appends = [
+        'created_ago',
+    ];
+
+    public function getCreatedAgoAttribute()
+    {
+        return $this->created_at->diffForHumans();
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
 }

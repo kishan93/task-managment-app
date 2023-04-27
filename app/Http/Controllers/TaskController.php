@@ -14,7 +14,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Tasks/Index', [
+        return Inertia::render('Tasks/TaskIndex', [
             'tasks' => Task::with('project')->get(),
         ]);
     }
@@ -24,7 +24,7 @@ class TaskController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Tasks/Create');
+        return Inertia::render('Tasks/TaskCreate');
     }
 
     /**
@@ -42,7 +42,7 @@ class TaskController extends Controller
      */
     public function show(Task $task)
     {
-        return Inertia::render('Tasks/Show', [
+        return Inertia::render('Tasks/TaskShow', [
             'task' => $task->load('project'),
         ]);
     }
@@ -52,7 +52,7 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
-        return Inertia::render('Tasks/Edit', [
+        return Inertia::render('Tasks/TaskEdit', [
             'task' => $task,
         ]);
     }
