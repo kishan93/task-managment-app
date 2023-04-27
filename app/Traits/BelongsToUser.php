@@ -10,7 +10,9 @@ trait BelongsToUser
     {
         static::addGlobalScope(new BelongsToUserScope);
         static::creating(function ($model) {
-            $model->user_id = auth()->id();
+            if (auth()->check()) {
+                $model->user_id = auth()->id();
+            }
         });
     }
 

@@ -29,10 +29,9 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [ \App\Http\Controllers\CommonController::class, 'dashboard'])->name('dashboard');
 
     Route::resource('projects', \App\Http\Controllers\ProjectController::class);
+    Route::post('projects/switch', [\App\Http\Controllers\ProjectController::class, 'switch'])->name('projects.switch');
     Route::resource('tasks', \App\Http\Controllers\TaskController::class);
 });

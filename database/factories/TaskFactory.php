@@ -25,4 +25,31 @@ class TaskFactory extends Factory
             'user_id' => \App\Models\User::factory(),
         ];
     }
+
+    public function todo(): TaskFactory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'status' => 'todo',
+            ];
+        });
+    }
+
+    public function inProgress(): TaskFactory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'status' => 'in_progress',
+            ];
+        });
+    }
+
+    public function done(): TaskFactory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'status' => 'done',
+            ];
+        });
+    }
 }

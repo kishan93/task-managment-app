@@ -3,7 +3,7 @@ import type {Project} from "@/js/Types/project";
 
 export interface Task {
     id: number;
-    name: string;
+    title: string;
     description: string;
     created_at: string;
     updated_at: string;

@@ -26,6 +26,7 @@ class StoreTaskRequest extends FormRequest
             'description' => ['nullable', 'max:255'],
             'project_id' => ['nullable', 'exists:projects,id'],
             'status' => ['nullable', 'in:todo,in_progress,done'],
+            'priority' => ['nullable', 'numeric'],
         ];
     }
 }

@@ -1,6 +1,6 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import {Head, Link, router, usePage} from '@inertiajs/vue3';
 import ApplicationMark from '@/Components/ApplicationMark.vue';
 import Banner from '@/Components/Banner.vue';
 import Dropdown from '@/Components/Dropdown.vue';
@@ -8,11 +8,16 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 
-defineProps({
+const props = defineProps({
     title: String,
 });
 
+const page = usePage()
+const projects = ref(page.props.projects);
+const currentProject = ref(page.props.currentProject);
+
 const showingNavigationDropdown = ref(false);
+const selectedProject = ref(currentProject.value ? currentProject.value : '');
 
 const switchToTeam = (team) => {
     router.put(route('current-team.update'), {
@@ -24,6 +29,14 @@ const switchToTeam = (team) => {
 
 const logout = () => {
     router.post(route('logout'));
+};
+
+const changeProject = () => {
+    router.post(route('projects.switch'), {
+        project_id: selectedProject.value,
+    }, {
+        preserveState: false,
+    });
 };
 </script>
 
@@ -60,11 +73,24 @@ const logout = () => {
                             </div>
                         </div>
 
-                        <div class="hidden sm:flex sm:items-center sm:ml-6">
-                            <div class="ml-3 relative">
-                                <!-- Teams Dropdown -->
-                                <Dropdown v-if="$page.props.jetstream.hasTeamFeatures" align="right" width="60">
-                                    <template #trigger>
+                        <div class="flex">
+
+                            <!-- Change Project Dropdown -->
+                            <div class="flex items-center">
+                                <select v-model="selectedProject" @change="changeProject(selectedProject)" class="form-select mt-1 block w-full rounded-lg">
+                                    <option value="">All Projects</option>
+                                    <option v-for="project in projects" :key="project.id" :value="project.id">
+                                        {{ project.title }}
+                                    </option>
+                                </select>
+                            </div>
+
+
+                            <div class="hidden sm:flex sm:items-center sm:ml-6">
+                                <div class="ml-3 relative">
+                                    <!-- Teams Dropdown -->
+                                    <Dropdown v-if="$page.props.jetstream.hasTeamFeatures" align="right" width="60">
+                                        <template #trigger>
                                         <span class="inline-flex rounded-md">
                                             <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
                                                 {{ $page.props.auth.user.current_team.name }}
@@ -74,62 +100,62 @@ const logout = () => {
                                                 </svg>
                                             </button>
                                         </span>
-                                    </template>
+                                        </template>
 
-                                    <template #content>
-                                        <div class="w-60">
-                                            <!-- Team Management -->
-                                            <template v-if="$page.props.jetstream.hasTeamFeatures">
-                                                <div class="block px-4 py-2 text-xs text-gray-400">
-                                                    Manage Team
-                                                </div>
-
-                                                <!-- Team Settings -->
-                                                <DropdownLink :href="route('teams.show', $page.props.auth.user.current_team)">
-                                                    Team Settings
-                                                </DropdownLink>
-
-                                                <DropdownLink v-if="$page.props.jetstream.canCreateTeams" :href="route('teams.create')">
-                                                    Create New Team
-                                                </DropdownLink>
-
-                                                <!-- Team Switcher -->
-                                                <template v-if="$page.props.auth.user.all_teams.length > 1">
-                                                    <div class="border-t border-gray-200" />
-
+                                        <template #content>
+                                            <div class="w-60">
+                                                <!-- Team Management -->
+                                                <template v-if="$page.props.jetstream.hasTeamFeatures">
                                                     <div class="block px-4 py-2 text-xs text-gray-400">
-                                                        Switch Teams
+                                                        Manage Team
                                                     </div>
 
-                                                    <template v-for="team in $page.props.auth.user.all_teams" :key="team.id">
-                                                        <form @submit.prevent="switchToTeam(team)">
-                                                            <DropdownLink as="button">
-                                                                <div class="flex items-center">
-                                                                    <svg v-if="team.id == $page.props.auth.user.current_team_id" class="mr-2 h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                                    </svg>
+                                                    <!-- Team Settings -->
+                                                    <DropdownLink :href="route('teams.show', $page.props.auth.user.current_team)">
+                                                        Team Settings
+                                                    </DropdownLink>
 
-                                                                    <div>{{ team.name }}</div>
-                                                                </div>
-                                                            </DropdownLink>
-                                                        </form>
+                                                    <DropdownLink v-if="$page.props.jetstream.canCreateTeams" :href="route('teams.create')">
+                                                        Create New Team
+                                                    </DropdownLink>
+
+                                                    <!-- Team Switcher -->
+                                                    <template v-if="$page.props.auth.user.all_teams.length > 1">
+                                                        <div class="border-t border-gray-200" />
+
+                                                        <div class="block px-4 py-2 text-xs text-gray-400">
+                                                            Switch Teams
+                                                        </div>
+
+                                                        <template v-for="team in $page.props.auth.user.all_teams" :key="team.id">
+                                                            <form @submit.prevent="switchToTeam(team)">
+                                                                <DropdownLink as="button">
+                                                                    <div class="flex items-center">
+                                                                        <svg v-if="team.id == $page.props.auth.user.current_team_id" class="mr-2 h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                                        </svg>
+
+                                                                        <div>{{ team.name }}</div>
+                                                                    </div>
+                                                                </DropdownLink>
+                                                            </form>
+                                                        </template>
                                                     </template>
                                                 </template>
-                                            </template>
-                                        </div>
-                                    </template>
-                                </Dropdown>
-                            </div>
+                                            </div>
+                                        </template>
+                                    </Dropdown>
+                                </div>
 
-                            <!-- Settings Dropdown -->
-                            <div class="ml-3 relative">
-                                <Dropdown align="right" width="48">
-                                    <template #trigger>
-                                        <button v-if="$page.props.jetstream.managesProfilePhotos" class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
-                                            <img class="h-8 w-8 rounded-full object-cover" :src="$page.props.auth.user.profile_photo_url" :alt="$page.props.auth.user.name">
-                                        </button>
+                                <!-- Settings Dropdown -->
+                                <div class="ml-3 relative">
+                                    <Dropdown align="right" width="48">
+                                        <template #trigger>
+                                            <button v-if="$page.props.jetstream.managesProfilePhotos" class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
+                                                <img class="h-8 w-8 rounded-full object-cover" :src="$page.props.auth.user.profile_photo_url" :alt="$page.props.auth.user.name">
+                                            </button>
 
-                                        <span v-else class="inline-flex rounded-md">
+                                            <span v-else class="inline-flex rounded-md">
                                             <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
                                                 {{ $page.props.auth.user.name }}
 
@@ -138,32 +164,33 @@ const logout = () => {
                                                 </svg>
                                             </button>
                                         </span>
-                                    </template>
+                                        </template>
 
-                                    <template #content>
-                                        <!-- Account Management -->
-                                        <div class="block px-4 py-2 text-xs text-gray-400">
-                                            Manage Account
-                                        </div>
+                                        <template #content>
+                                            <!-- Account Management -->
+                                            <div class="block px-4 py-2 text-xs text-gray-400">
+                                                Manage Account
+                                            </div>
 
-                                        <DropdownLink :href="route('profile.show')">
-                                            Profile
-                                        </DropdownLink>
-
-                                        <DropdownLink v-if="$page.props.jetstream.hasApiFeatures" :href="route('api-tokens.index')">
-                                            API Tokens
-                                        </DropdownLink>
-
-                                        <div class="border-t border-gray-200" />
-
-                                        <!-- Authentication -->
-                                        <form @submit.prevent="logout">
-                                            <DropdownLink as="button">
-                                                Log Out
+                                            <DropdownLink :href="route('profile.show')">
+                                                Profile
                                             </DropdownLink>
-                                        </form>
-                                    </template>
-                                </Dropdown>
+
+                                            <DropdownLink v-if="$page.props.jetstream.hasApiFeatures" :href="route('api-tokens.index')">
+                                                API Tokens
+                                            </DropdownLink>
+
+                                            <div class="border-t border-gray-200" />
+
+                                            <!-- Authentication -->
+                                            <form @submit.prevent="logout">
+                                                <DropdownLink as="button">
+                                                    Log Out
+                                                </DropdownLink>
+                                            </form>
+                                        </template>
+                                    </Dropdown>
+                                </div>
                             </div>
                         </div>
 

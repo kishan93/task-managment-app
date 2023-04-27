@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->string('title', 255);
             $table->text('description');
-            $table->float('priority')->default(0);
+            $table->float('priority')->default(1);
             $table->enum('status', ['todo', 'in_progress', 'done'])->default('todo');
             $table->foreignId('user_id')
                 ->references('id')

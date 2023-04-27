@@ -9,13 +9,26 @@ use Inertia\Inertia;
 
 class TaskController extends Controller
 {
+
+
+    public function __construct()
+    {
+        Task::addGlobalScope(function ($query) {
+            if (session()->has('project_id')) {
+                $query->where('project_id', session()->get('project_id'));
+            }
+        });
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        $tasks = Task::with('project')
+            ->orderBy('priority', 'asc')
+            ->get();
         return Inertia::render('Tasks/TaskIndex', [
-            'tasks' => Task::with('project')->get(),
+            'tasks' => $tasks,
         ]);
     }
 
@@ -32,7 +45,16 @@ class TaskController extends Controller
      */
     public function store(StoreTaskRequest $request)
     {
-        Task::create($request->validated());
+        //remove null values
+        $data = collect($request->all())->filter()->toArray();
+        $data['project_id'] = session()->get('project_id');
+        Task::create($data);
+
+        if ($request->expectsJson()){
+            return response()->json([
+                'message' => 'Task created.',
+            ]);
+        }
 
         return redirect()->route('tasks.index');
     }
@@ -63,6 +85,12 @@ class TaskController extends Controller
     public function update(UpdateTaskRequest $request, Task $task)
     {
         $task->update($request->validated());
+
+        if ($request->expectsJson()){
+            return response()->json([
+                'message' => 'Task updated.',
+            ]);
+        }
 
         return redirect()->route('tasks.index');
     }

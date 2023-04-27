@@ -14,6 +14,7 @@ class Project extends Model
     protected $fillable = [
         'title',
         'description',
+        'user_id',
     ];
 
     protected $appends = [
@@ -22,7 +23,7 @@ class Project extends Model
 
     public function getCreatedAgoAttribute()
     {
-        return $this->created_at->diffForHumans();
+        return $this->created_at?->diffForHumans();
     }
 
     public function tasks()

@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class ProjectController extends Controller
 {
+
+
     /**
      * Display a listing of the resource.
      */
@@ -75,5 +78,10 @@ class ProjectController extends Controller
         $project->delete();
 
         return redirect()->route('projects.index');
+    }
+
+    public function switch(Request $request)
+    {
+        session()->put('project_id', $request->project_id);
     }
 }
