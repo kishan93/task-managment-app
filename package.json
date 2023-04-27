@@ -2,7 +2,8 @@
     "private": true,
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "lint": "eslint --ext .js,.vue ."
     },
     "devDependencies": {
         "@inertiajs/vue3": "^1.0.0",
