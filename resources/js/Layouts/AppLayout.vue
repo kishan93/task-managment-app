@@ -91,7 +91,7 @@ const changeProject = () => {
                   @change="changeProject(selectedProject)"
                 >
                   <option value="">
-                    All Projects
+                    Global View
                   </option>
                   <option
                     v-for="project in projects"

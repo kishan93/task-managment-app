@@ -29,11 +29,6 @@ const taskStatus = computed(() => {
                     {{ task.created_ago  }}
                 </p>
             </div>
-            <div class="mx-1 w-1/2">
-                <p class="rounded-full px-2 text-center  border text-gray-900 border-green-500 capitalize">
-                    {{ task.priority}}
-                </p>
-            </div>
         </div>
     </div>
 </template>

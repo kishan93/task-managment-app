@@ -38,7 +38,7 @@ defineProps({
                         class="font-bold">{{ activeProject.title }}</span>.
                     </h3>
                     <h3 class="text-xl pb-6" v-else>
-                        You are currently browsing all projects.
+                        You are currently working on Global tasks.
                     </h3>
 
                     <p class="text-xl py-2 border-b border-t text-green-800">

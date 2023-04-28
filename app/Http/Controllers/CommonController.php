@@ -12,9 +12,7 @@ class CommonController extends Controller
     public function __construct()
     {
         Task::addGlobalScope(function ($query) {
-            if (session()->has('project_id')) {
-                $query->where('project_id', session()->get('project_id'));
-            }
+            $query->where('project_id', session()->get('project_id', null));
         });
     }
 
