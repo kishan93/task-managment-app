@@ -9,12 +9,6 @@ use Inertia\Inertia;
 
 class CommonController extends Controller
 {
-    public function __construct()
-    {
-        Task::addGlobalScope(function ($query) {
-            $query->where('project_id', session()->get('project_id', null));
-        });
-    }
 
     public function dashboard()
     {

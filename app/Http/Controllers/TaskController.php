@@ -10,13 +10,6 @@ use Inertia\Inertia;
 class TaskController extends Controller
 {
 
-
-    public function __construct()
-    {
-        Task::addGlobalScope(function ($query) {
-            $query->where('project_id', session()->get('project_id', null));
-        });
-    }
     /**
      * Display a listing of the resource.
      */

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\SelectedProjectScope;
 use App\Traits\BelongsToUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -35,5 +36,11 @@ class Task extends Model
     public function project()
     {
         return $this->belongsTo(Project::class);
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(new SelectedProjectScope());
     }
 }
